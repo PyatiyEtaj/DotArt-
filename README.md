@@ -1,5 +1,8 @@
 # DotArt :)
-Simple dot art
+
+![logo](/images/logo.jpg)
+
+* Simple dot art
 
 ```
 Usage: DotArt.py [options]
@@ -13,5 +16,10 @@ Options:
                         constraints on count of output symbols
 ```
 
-
-![logo](/images/logo.jpg)
+* Pick picture
+* Settings
+* To end this just hit the `ESC`
+* ...
+* Profit
+ 
+![Example](/images/Example.JPG)
