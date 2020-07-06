@@ -14,6 +14,7 @@ Options:
                         output file
   -c CONSTRAINTS, --constraints=CONSTRAINTS
                         constraints on count of output symbols
+  -e, --emptyspaces     remove empty spaces
 ```
 
 * Pick picture
