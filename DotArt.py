@@ -4,6 +4,7 @@ from optparse import OptionParser
 COLOR = 255
 SCALE = 100
 IMG_WIDTH = 62
+EMPTY_SPACES = False
 
 def get_symbol(img, i, j):
     (h, w) = img.shape
@@ -19,6 +20,7 @@ def get_symbol(img, i, j):
 
         symbol += 64  if img[i+3][j]  ==COLOR else 0
         symbol += 128 if img[i+3][j+1]==COLOR else 0
+    if (EMPTY_SPACES and symbol == 0) : symbol = 1
     return chr(10240 + symbol)
 
 def translate_cv2(img):
@@ -97,12 +99,17 @@ if __name__ == "__main__":
                   help='output file')
     parser.add_option('-c', '--constraints', dest='constraints',
                   help='constraints on count of output symbols')
+    parser.add_option('-e', '--emptyspaces', dest='emptyspaces',
+                  help='remove empty spaces', action='store_true', default=False)
     (options, args) = parser.parse_args()
 
 
     inputfile =  options.inputfile if (options.inputfile) else None
     outputfile =  options.outputfile if (options.outputfile) else None
     constraints =  int(options.constraints) if (options.constraints) else 1500
+    EMPTY_SPACES = options.emptyspaces
+
+    #print(f'[-i = {inputfile}] [-o = {outputfile}] [-c = {constraints}] [-es = {EMPTY_SPACES}]\n')
 
     if (not inputfile is None):        
         img = cv2.imread(inputfile)    
@@ -111,7 +118,7 @@ if __name__ == "__main__":
         art = translate_cv2(img)
         if (len(art) < constraints):
             print(art)
-        elif (not outputfile is None):
+        if (not outputfile is None):
             with open(outputfile, "w", encoding="UTF-8") as text_file:
                 print(art, file=text_file)
     
