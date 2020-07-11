@@ -2,9 +2,12 @@ import cv2
 from optparse import OptionParser
 
 COLOR = 255
-SCALE = 100
-IMG_WIDTH = 62
 EMPTY_SPACES = False
+
+tb_threshold= 'threshold'
+tb_scale = 'width'
+tb_type = 'type'
+title_window="OPTIONS"
 
 def get_symbol(img, i, j):
     (h, w) = img.shape
@@ -32,49 +35,40 @@ def translate_cv2(img):
         ASCII_art += '\n'
     return ASCII_art
 
-def img_size(img, scale, w = -1): 
-    height = img.shape[0]
-    width  = img.shape[1]
-    if (w != -1):
-        mn = width/height
-        width = w
-        height = width/mn
-    else:            
-        width = img.shape[1] * scale / 100
-        height = img.shape[0] * scale / 100
-
+def img_size(img, scale): 
+    width = img.shape[1] * scale / 100
+    height = img.shape[0] * scale / 100
     width -= width%4
     height -= height%2
-
     return (int(width), int(height)) 
 
-def resize_img(img, scale, w):            
-    sz = img_size(img, scale, w)
+def resize_img(img, scale):            
+    sz = img_size(img, scale)
     resize = cv2.resize(img, sz, interpolation = cv2.INTER_AREA)
     return resize
 
-def on_trackbar(val):
+def do_nothing(val):
     pass
 
-def cv_2_wnd_threshold(img):
-    title_window="OPTIONS"
-    trackbar_name1= 'threshold'
-    trackbar_name2 = 'width'
-    trackbar_name3 = 'TYPE'
+def init_wnd():
     cv2.namedWindow(title_window)
-    cv2.createTrackbar(trackbar_name1,  title_window, 0, 255, on_trackbar)
-    cv2.createTrackbar(trackbar_name2,  title_window, img.shape[1], img.shape[1], on_trackbar)
-    cv2.createTrackbar(trackbar_name3,  title_window, 0, 1, on_trackbar)
     cv2.resizeWindow(title_window, 384, 90)
+    cv2.createTrackbar(tb_threshold,  title_window, 0, 255, do_nothing)
+    cv2.createTrackbar(tb_scale,  title_window, 100, 100, do_nothing)
+    cv2.createTrackbar(tb_type,  title_window, 0, 1, do_nothing)
+
+def cv_2_wnd_threshold(img):    
+    init_wnd()
     info = cv2.resize(img, (384,120), interpolation = cv2.INTER_AREA)
     info[:] = 255
     result = img
-    while (True):
-        w = cv2.getTrackbarPos(trackbar_name2,  title_window)
-        if w > 16: result = resize_img(img, SCALE, w)  
 
-        val = cv2.getTrackbarPos(trackbar_name1,  title_window)
-        switch  = cv2.THRESH_BINARY if cv2.getTrackbarPos(trackbar_name3,  title_window) > 0.5 else cv2.THRESH_BINARY_INV
+    while (True):
+        scale = cv2.getTrackbarPos(tb_scale,  title_window)
+        if scale > 0: result = resize_img(img, scale)  
+
+        val = cv2.getTrackbarPos(tb_threshold,  title_window)
+        switch  = cv2.THRESH_BINARY if cv2.getTrackbarPos(tb_type,  title_window) > 0.5 else cv2.THRESH_BINARY_INV
         _, result = cv2.threshold(result, val, 255, switch)
 
         info = cv2.putText(info, f'{result.shape[0]}, {result.shape[1]}, {result.shape[0]*result.shape[1]/8}', (50,50), cv2.FONT_HERSHEY_SIMPLEX, 1, 0)
