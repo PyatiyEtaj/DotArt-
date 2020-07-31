@@ -5,7 +5,7 @@ COLOR = 255
 EMPTY_SPACES = False
 
 tb_threshold= 'threshold'
-tb_scale = 'width'
+tb_scale = 'scale'
 tb_type = 'type'
 title_window="OPTIONS"
 
