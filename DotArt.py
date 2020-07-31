@@ -50,7 +50,7 @@ def resize_img(img, scale):
 def do_nothing(val):
     pass
 
-def init_wnds():
+def init_wnd():
     cv2.namedWindow(title_window)
     cv2.resizeWindow(title_window, 384, 90)
     cv2.createTrackbar(tb_threshold,  title_window, 0, 255, do_nothing)
@@ -58,7 +58,7 @@ def init_wnds():
     cv2.createTrackbar(tb_type,  title_window, 0, 1, do_nothing)
 
 def image_setup(img):    
-    init_wnds()
+    init_wnd()
     info = cv2.resize(img, (384,120), interpolation = cv2.INTER_AREA)
     info[:] = 255
     result = img
